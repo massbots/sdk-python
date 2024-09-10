@@ -3,10 +3,11 @@
 from .api import Api
 from .api import DownloadResult
 from .api import Video
+from .api import ApiError
 
 __all__ = (
     "API"
-    "ApiException"
+    "ApiError"
     "DownloadResult"
     "Video"
 )

@@ -1,4 +1,7 @@
 from __future__ import annotations
+
+import json
+
 import requests
 import time
 
@@ -49,11 +52,15 @@ class Api:
 
         response = requests.get(url, headers=headers)
         if response.status_code != 200:
+            try:
+                data = json.loads(response.text.splitlines()[0])
+            except requests.exceptions.JSONDecodeError:
+                data = {"error": response.text}
+                pass
             raise ApiError(
                 status=response.status_code,
-                reason=response.json().get("error"),
                 http_resp=response,
-                body=response.json()
+                body=data
             )
         return response.json()
 
