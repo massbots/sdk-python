@@ -3,17 +3,19 @@ import massbots
 
 mb = massbots.Api(
     token=os.environ["TOKEN"],
-    bot_id=os.environ["BOT_ID"]
+    bot_id=os.environ["BOT_ID"],
 )
 
 video = mb.video("dQw4w9WgXcQ")
-download = video.download("1080p")
+#download = video.download("1080p")
 
 # SDK has download result polling implemented already
-result = download.wait_until_ready()
+#result = download.wait_until_ready()
 
 # The file_id is now available to your bot
-print(result.file_id)
+#print(result.file_id)
+
+print(video)
 
 # Get the channel of the video
 channel = mb.channel(video.channel_id)
