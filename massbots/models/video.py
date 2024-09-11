@@ -6,53 +6,61 @@ from typing import List
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
+import massbots
 
 
 from typing import cast
 from typing import Dict
 
 if TYPE_CHECKING:
-  from models.channel_thumbnails import ChannelThumbnails
+  from .video_thumbnails import VideoThumbnails
 
 
 
 
 
-T = TypeVar("T", bound="Channel")
+T = TypeVar("T", bound="Video")
 
 
 @_attrs_define
-class Channel:
-    """ YouTube channel
+class Video:
+    """ YouTube video
 
         Attributes:
             id (str):
             title (str):
             description (str):
             url (str):
-            banner_url (str):
+            published_at (str):
+            category_id (str):
+            channel_id (str):
+            channel_title (str):
+            channel_url (str):
             comment_count (int):
-            subscriber_count (int):
-            video_count (int):
+            like_count (int):
             view_count (int):
-            thumbnails (ChannelThumbnails):
+            thumbnails (VideoThumbnails):
      """
 
     id: str
     title: str
     description: str
     url: str
-    banner_url: str
+    published_at: str
+    category_id: str
+    channel_id: str
+    channel_title: str
+    channel_url: str
     comment_count: int
-    subscriber_count: int
-    video_count: int
+    like_count: int
     view_count: int
-    thumbnails: 'ChannelThumbnails'
+    thumbnails: 'VideoThumbnails'
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
 
     def to_dict(self) -> Dict[str, Any]:
-        from models.channel_thumbnails import ChannelThumbnails
+        from .video_thumbnails import VideoThumbnails
+
         id = self.id
 
         title = self.title
@@ -61,13 +69,19 @@ class Channel:
 
         url = self.url
 
-        banner_url = self.banner_url
+        published_at = self.published_at
+
+        category_id = self.category_id
+
+        channel_id = self.channel_id
+
+        channel_title = self.channel_title
+
+        channel_url = self.channel_url
 
         comment_count = self.comment_count
 
-        subscriber_count = self.subscriber_count
-
-        video_count = self.video_count
+        like_count = self.like_count
 
         view_count = self.view_count
 
@@ -81,10 +95,13 @@ class Channel:
             "title": title,
             "description": description,
             "url": url,
-            "banner_url": banner_url,
+            "published_at": published_at,
+            "category_id": category_id,
+            "channel_id": channel_id,
+            "channel_title": channel_title,
+            "channel_url": channel_url,
             "comment_count": comment_count,
-            "subscriber_count": subscriber_count,
-            "video_count": video_count,
+            "like_count": like_count,
             "view_count": view_count,
             "thumbnails": thumbnails,
         })
@@ -95,7 +112,8 @@ class Channel:
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
-        from models.channel_thumbnails import ChannelThumbnails
+        from .video_thumbnails import VideoThumbnails
+
         d = src_dict.copy()
         id = d.pop("id")
 
@@ -105,40 +123,46 @@ class Channel:
 
         url = d.pop("url")
 
-        banner_url = d.pop("banner_url")
+        published_at = d.pop("published_at")
+
+        category_id = d.pop("category_id", 0)
+
+        channel_id = d.pop("channel_id")
+
+        channel_title = d.pop("channel_title")
+
+        channel_url = d.pop("channel_url")
 
         comment_count = d.pop("comment_count")
 
-        subscriber_count = d.pop("subscriber_count")
-
-        video_count = d.pop("video_count")
+        like_count = d.pop("like_count")
 
         view_count = d.pop("view_count")
 
-        thumbnails = None
-        thumbs = d.pop("thumbnails", None)
-        if thumbs is not None:
-            thumbnails = ChannelThumbnails.from_dict(thumbs)
+        thumbnails = VideoThumbnails.from_dict(d.pop("thumbnails"))
 
 
 
 
-        channel = cls(
+        video = cls(
             id=id,
             title=title,
             description=description,
             url=url,
-            banner_url=banner_url,
+            published_at=published_at,
+            category_id=category_id,
+            channel_id=channel_id,
+            channel_title=channel_title,
+            channel_url=channel_url,
             comment_count=comment_count,
-            subscriber_count=subscriber_count,
-            video_count=video_count,
+            like_count=like_count,
             view_count=view_count,
             thumbnails=thumbnails,
         )
 
 
-        channel.additional_properties = d
-        return channel
+        video.additional_properties = d
+        return video
 
     @property
     def additional_keys(self) -> List[str]:

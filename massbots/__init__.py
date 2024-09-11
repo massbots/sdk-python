@@ -2,12 +2,13 @@
 
 from .api import Api
 from .api import DownloadResult
-from .api import Video
 from .api import ApiError
+from .api import Video
+
 
 __all__ = (
-    "API"
-    "ApiError"
-    "DownloadResult"
-    "Video"
+    "Api",
+    "ApiError",
+    "DownloadResult",
+    "Video",
 )

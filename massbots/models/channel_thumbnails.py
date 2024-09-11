@@ -6,22 +6,21 @@ from typing import List
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-
 from typing import cast
 from typing import Dict
 
 if TYPE_CHECKING:
-  from models.thumbnail import Thumbnail
+  from .thumbnail import Thumbnail
 
 
 
 
 
-T = TypeVar("T", bound="VideoThumbnails")
+T = TypeVar("T", bound="ChannelThumbnails")
 
 
 @_attrs_define
-class VideoThumbnails:
+class ChannelThumbnails:
     """ 
      """
 
@@ -29,7 +28,7 @@ class VideoThumbnails:
 
 
     def to_dict(self) -> Dict[str, Any]:
-        from models.thumbnail import Thumbnail
+        from .thumbnail import Thumbnail
         
         field_dict: Dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
@@ -41,9 +40,9 @@ class VideoThumbnails:
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
-        from models.thumbnail import Thumbnail
+        from .thumbnail import Thumbnail
         d = src_dict.copy()
-        video_thumbnails = cls(
+        channel_thumbnails = cls(
         )
 
 
@@ -55,8 +54,8 @@ class VideoThumbnails:
 
             additional_properties[prop_name] = additional_property
 
-        video_thumbnails.additional_properties = additional_properties
-        return video_thumbnails
+        channel_thumbnails.additional_properties = additional_properties
+        return channel_thumbnails
 
     @property
     def additional_keys(self) -> List[str]:
