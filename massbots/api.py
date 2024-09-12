@@ -4,7 +4,7 @@ import requests
 import time
 from . import models
 from .error import ApiError
-from typing import List, Callable, Optional
+from typing import List, Callable, Optional, Dict
 
 
 class Api:
@@ -17,9 +17,9 @@ class Api:
     def balance(self) -> int:
         return models.Balance.from_dict(self._do(f"{self.base_url}/me/balance")).balance
 
-    def video_formats(self, id: str) -> List[models.VideoFormat]:
+    def video_formats(self, id: str) -> models._VideoFormats:
         data = self._do(f"{self.base_url}/video/{id}/formats")
-        return [models.VideoFormat.from_dict(data[format]) for format in data]
+        return models._VideoFormats.from_dict(data)
 
     def channel(self, id: str) -> models.Channel:
         return models.Channel.from_dict(self._do(f"{self.base_url}/channel/{id}"))
@@ -90,7 +90,7 @@ class Video(models.Video):
         self._api = api
         self._video_id = video_id
 
-    def formats(self) -> Dict[str, models.VideoFormat]:
+    def formats(self) -> models._VideoFormats:
         return self._api.video_formats(self.id)
 
     def download(self, format: str) -> DownloadResult:

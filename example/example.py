@@ -11,18 +11,18 @@ mb = massbots.Api(
     bot_id=os.environ["BOT_ID"],
 )
 
-# download = video.download("1080p")
-
-# SDK has download result polling implemented already
-# result = download.wait_until_ready()
-
-# The file_id is now available to your bot
-# print(result.file_id)
-
 print(f"Balance: {mb.balance()}")
 
 video = mb.video("dQw4w9WgXcQ")
 print(f"Video: {video.title}")
+
+download = video.download("1080p")
+
+# SDK has download result polling implemented already
+result = download.wait_until_ready()
+
+# The file_id is now available to your bot
+print(result.file_id)
 
 channel = mb.channel(video.channel_id)
 print(f"Channel: {channel.title}")
@@ -32,6 +32,7 @@ print(f"Search: {len(search)} videos")
 
 # Get the available formats from API
 formats = video.formats()
+print(formats)
 
 # Transfer all cached formats instantly
 cached = formats.filter(cached=True)

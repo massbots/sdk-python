@@ -2,17 +2,8 @@ from typing import Any, Dict, Type, TypeVar, Tuple, Optional, BinaryIO, TextIO, 
 
 from typing import List
 
-
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-
-
-
-
-
-
-
-
 
 T = TypeVar("T", bound="Error")
 
@@ -28,20 +19,18 @@ class Error:
     error: str
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-
     def to_dict(self) -> Dict[str, Any]:
         error = self.error
 
-
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "error": error,
-        })
+        field_dict.update(
+            {
+                "error": error,
+            }
+        )
 
         return field_dict
-
-
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
@@ -51,7 +40,6 @@ class Error:
         error = cls(
             error=error,
         )
-
 
         error.additional_properties = d
         return error
