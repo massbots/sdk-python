@@ -108,9 +108,13 @@ class CustomVideo(Video):
         comment_count = self.comment_count
         like_count = self.like_count
         view_count = self.view_count
-
-        # Handle case where thumbnails might be None
-        thumbnails = self.thumbnails.to_dict() if self.thumbnails else None
+        
+        if not isinstance(self.thumbnails, dict):
+            # Handle case where thumbnails might be None
+            thumbnails = self.thumbnails.to_dict() if self.thumbnails else None
+        else:
+            # Handle case when self.thumbnails is a dict
+            thumbnails = self.thumbnails
 
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
