@@ -54,7 +54,6 @@ class Api:
         """
         data = self._query_api(f"{self.base_url}/video/{video_id}/formats")
 
-        # TODO: Fix calling private field
         return models.VideoFormats.from_dict(data)
 
     def channel(self, channel_id: str) -> models.Channel:
