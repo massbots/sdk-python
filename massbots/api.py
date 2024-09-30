@@ -42,7 +42,7 @@ class Api:
             self._query_api(f"{self.base_url}/me/balance")
         ).balance
 
-    def video_formats(self, video_id: str) -> models._VideoFormats:
+    def video_formats(self, video_id: str) -> models.VideoFormats:
         """
         Fetches available video formats for a given video ID.
 
@@ -50,12 +50,12 @@ class Api:
             video_id (str): The ID of the video.
 
         Returns:
-            models._VideoFormats: An object containing information about available video formats.
+            models.VideoFormats: An object containing information about available video formats.
         """
         data = self._query_api(f"{self.base_url}/video/{video_id}/formats")
 
         # TODO: Fix calling private field
-        return models._VideoFormats.from_dict(data)
+        return models.VideoFormats.from_dict(data)
 
     def channel(self, channel_id: str) -> models.Channel:
         """
@@ -132,7 +132,7 @@ class Api:
         headers = {"X-Token": f"{self._token}"}
         if self._bot_id is not None:
             headers["X-Bot-Id"] = self._bot_id
-        
+
         response = self._get_request(url, headers=headers)
         if response.status_code != requests.codes.ok:
             raise ApiError(status=response.status_code, data=response.json())
@@ -220,12 +220,12 @@ class Video(models.Video):
         self._api: Api = api
         self._video_id: str = video_id
 
-    def formats(self) -> models._VideoFormats:
+    def formats(self) -> models.VideoFormats:
         """
         Retrieves the available formats for this video.
 
         Returns:
-            models._VideoFormats: An object containing information about available video formats.
+            models.VideoFormats: An object containing information about available video formats.
         """
         return self._api.video_formats(self.id)
 
