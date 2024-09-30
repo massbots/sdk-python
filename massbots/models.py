@@ -7,6 +7,7 @@ from .openapi.models import *
 
 T = TypeVar("T", bound="Channel")
 
+
 @_attrs_define
 class CustomChannel(Channel):
     def to_dict(self) -> Dict[str, Any]:
@@ -19,7 +20,7 @@ class CustomChannel(Channel):
         subscriber_count = self.subscriber_count
         video_count = self.video_count
         view_count = self.view_count
-        
+
         # Handle case where thumbnails might be None
         thumbnails = self.thumbnails.to_dict() if self.thumbnails is not None else None
 
@@ -65,7 +66,11 @@ class CustomChannel(Channel):
 
         # Handle case where thumbnails might be None
         thumbnails_data = d.pop("thumbnails", None)
-        thumbnails = ChannelThumbnails.from_dict(thumbnails_data) if thumbnails_data is not None else None
+        thumbnails = (
+            ChannelThumbnails.from_dict(thumbnails_data)
+            if thumbnails_data is not None
+            else None
+        )
 
         channel = cls(
             id=id,
@@ -86,10 +91,11 @@ class CustomChannel(Channel):
 
 T = TypeVar("T", bound="Video")
 
+
 @_attrs_define
 class CustomVideo(Video):
     category_id: str = None
-    
+
     def to_dict(self) -> Dict[str, Any]:
         id = self.id
         title = self.title
@@ -102,7 +108,7 @@ class CustomVideo(Video):
         comment_count = self.comment_count
         like_count = self.like_count
         view_count = self.view_count
-        
+
         # Handle case where thumbnails might be None
         thumbnails = self.thumbnails.to_dict() if self.thumbnails else None
 
@@ -153,7 +159,9 @@ class CustomVideo(Video):
 
         # Handle case where thumbnails might be None
         thumbnails_data = d.pop("thumbnails", None)
-        thumbnails = VideoThumbnails.from_dict(thumbnails_data) if thumbnails_data else None
+        thumbnails = (
+            VideoThumbnails.from_dict(thumbnails_data) if thumbnails_data else None
+        )
 
         video = cls(
             id=id,
@@ -186,7 +194,7 @@ class CustomVideoFormat(VideoFormat):
 
     def to_dict(self) -> Dict[str, Any]:
         field_dict = super().to_dict()
-        
+
         # Remove file_size if it's None
         if self.file_size is None:
             field_dict.pop("file_size", None)
@@ -198,9 +206,7 @@ class CustomVideoFormat(VideoFormat):
         # Handle the case where file_size might be missing or None
         file_size = src_dict.get("file_size")
         return cls(
-            format_=src_dict["format"],
-            cached=src_dict["cached"],
-            file_size=file_size
+            format_=src_dict["format"], cached=src_dict["cached"], file_size=file_size
         )
 
 
@@ -217,7 +223,9 @@ class VideoFormats:
     @classmethod
     def from_dict(cls, src_dict: Dict[str, Any]) -> "VideoFormats":
         # Convert the dictionary into CustomVideoFormat objects
-        formats = {key: CustomVideoFormat.from_dict(value) for key, value in src_dict.items()}
+        formats = {
+            key: CustomVideoFormat.from_dict(value) for key, value in src_dict.items()
+        }
         return cls(formats=formats)
 
     def add_format(self, video_format: CustomVideoFormat) -> None:
@@ -225,8 +233,8 @@ class VideoFormats:
         self.formats[video_format.format_] = video_format
 
     def filter(self, cached: bool):
-        return {u:v for u,v in self.formats.items() if v.cached == cached}
-    
+        return {u: v for u, v in self.formats.items() if v.cached == cached}
+
     def __getitem__(self, key: str) -> CustomVideoFormat:
         return self.formats[key]
 
@@ -238,4 +246,3 @@ class VideoFormats:
 
     def __contains__(self, key: str) -> bool:
         return key in self.formats
-
