@@ -1,12 +1,12 @@
 from __future__ import annotations
 from .openapi.models import Video, Channel, VideoFormat, DownloadResult, Balance
-from typing import Dict, ClassVar, List, Optional, Any, Set
+from typing import ClassVar, Any, Set
 import json
 
 
 class _VideoFormats:
-    formats: Dict[str, VideoFormat]
-    __properties: ClassVar[List[str]] = ["formats"]
+    formats: dict[str, VideoFormat]
+    __properties: ClassVar[list[str]] = ["formats"]
 
     def to_str(self) -> str:
         """Returns the string representation of the model using alias"""
@@ -18,11 +18,11 @@ class _VideoFormats:
         return json.dumps(self.to_dict())
 
     @classmethod
-    def from_json(cls, json_str: str) -> Optional[_VideoFormats]:
+    def from_json(cls, json_str: str) -> _VideoFormats | None:
         """Create an instance of VideoFormats from a JSON string"""
         return cls.from_dict(json.loads(json_str))
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         """Return the dictionary representation of the model using alias.
 
         This has the following differences from calling pydantic's
@@ -49,7 +49,7 @@ class _VideoFormats:
         return _dict
 
     @classmethod
-    def from_dict(cls, obj: Optional[Dict[str, Any]]) -> Optional[_VideoFormats]:
+    def from_dict(cls, obj: dict[str, Any] | None) -> _VideoFormats | None:
         """Create an instance of VideoFormats from a dict"""
         if obj is None:
             return None
