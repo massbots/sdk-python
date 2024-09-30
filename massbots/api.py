@@ -81,6 +81,7 @@ class Api:
             list[Video]: A list of Video objects matching the search criteria.
         """
         from pprint import pprint
+
         data = self._query_api(f"{self.base_url}/search?q={query}")
         pprint(data)
         videos = [models.CustomVideo.from_dict(video) for video in data]
