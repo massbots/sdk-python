@@ -1,26 +1,13 @@
 from typing import (
     Any,
-    Dict,
     Type,
     TypeVar,
-    Tuple,
-    Optional,
-    BinaryIO,
-    TextIO,
     TYPE_CHECKING,
 )
-
-from typing import List
 
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
-
-import massbots
-
-
-from typing import cast
-from typing import Dict
 
 if TYPE_CHECKING:
     from .video_thumbnails import VideoThumbnails
@@ -62,9 +49,9 @@ class Video:
     like_count: int
     view_count: int
     thumbnails: "VideoThumbnails"
-    additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
+    additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         from .video_thumbnails import VideoThumbnails
 
         id = self.id
@@ -90,10 +77,15 @@ class Video:
         like_count = self.like_count
 
         view_count = self.view_count
+        
+        if not isinstance(self.thumbnails, VideoThumbnails):
+            self.thumbnails = VideoThumbnails.from_dict(self.thumbnails)
+        
+        print(f"{self.thumbnails=}")
 
         thumbnails = self.thumbnails.to_dict()
 
-        field_dict: Dict[str, Any] = {}
+        field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
@@ -116,7 +108,7 @@ class Video:
         return field_dict
 
     @classmethod
-    def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
+    def from_dict(cls: Type[T], src_dict: dict[str, Any]) -> T:
         from .video_thumbnails import VideoThumbnails
 
         d = src_dict.copy()
@@ -166,7 +158,7 @@ class Video:
         return video
 
     @property
-    def additional_keys(self) -> List[str]:
+    def additional_keys(self) -> list[str]:
         return list(self.additional_properties.keys())
 
     def __getitem__(self, key: str) -> Any:
