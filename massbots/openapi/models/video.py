@@ -81,8 +81,6 @@ class Video:
         if not isinstance(self.thumbnails, VideoThumbnails):
             self.thumbnails = VideoThumbnails.from_dict(self.thumbnails)
         
-        print(f"{self.thumbnails=}")
-
         thumbnails = self.thumbnails.to_dict()
 
         field_dict: dict[str, Any] = {}

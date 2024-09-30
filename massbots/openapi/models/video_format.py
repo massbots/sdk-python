@@ -21,7 +21,7 @@ class VideoFormat:
 
     format: str
     cached: bool
-    file_size: int
+    file_size: int | None
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
     def to_dict(self) -> dict[str, Any]:
@@ -89,11 +89,17 @@ class VideoFormats:
     formats: list[VideoFormat] = _attrs_field(factory=list)
     additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-    def to_dict(self) -> dict[str, Any]:
-        formats_dict = [format.to_dict() for format in self.formats]
-        field_dict: dict[str, Any] = {"formats": formats_dict}
-        field_dict.update(self.additional_properties)
-        return field_dict
+    def to_dict(self) -> dict[str, Any]:        
+        formats_dict = {}
+        
+        for format in self.formats:
+            format_dict = format.to_dict()
+            format_value = format.format
+            if format.file_size == 0:
+                del format_dict["file_size"]
+            formats_dict[format_value] = format_dict
+        
+        return formats_dict
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: dict[str, Any]) -> T:
