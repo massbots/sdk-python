@@ -65,7 +65,10 @@ class Channel:
 
         view_count = self.view_count
 
-        thumbnails = self.thumbnails.to_dict()
+        if self.thumbnails:
+            thumbnails = self.thumbnails.to_dict()
+        else:
+            thumbnails = None
 
         field_dict: dict[str, Any] = {}
         field_dict.update(self.additional_properties)
