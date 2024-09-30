@@ -1,15 +1,10 @@
-from typing import (
-    Any,
-    Type,
-    TypeVar,
-    TYPE_CHECKING,
-)
+from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 if TYPE_CHECKING:
-    from .thumbnail import Thumbnail
+    from ..models.thumbnail import Thumbnail
 
 
 T = TypeVar("T", bound="ChannelThumbnails")
@@ -19,22 +14,18 @@ T = TypeVar("T", bound="ChannelThumbnails")
 class ChannelThumbnails:
     """ """
 
-    additional_properties: dict[str, "Thumbnail"] = _attrs_field(
-        init=False, factory=dict
-    )
+    additional_properties: Dict[str, "Thumbnail"] = _attrs_field(init=False, factory=dict)
 
-    def to_dict(self) -> dict[str, Any]:
-        from .thumbnail import Thumbnail
-
-        field_dict: dict[str, Any] = {}
+    def to_dict(self) -> Dict[str, Any]:
+        field_dict: Dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
             field_dict[prop_name] = prop.to_dict()
 
         return field_dict
 
     @classmethod
-    def from_dict(cls: Type[T], src_dict: dict[str, Any]) -> T:
-        from .thumbnail import Thumbnail
+    def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
+        from ..models.thumbnail import Thumbnail
 
         d = src_dict.copy()
         channel_thumbnails = cls()
@@ -49,7 +40,7 @@ class ChannelThumbnails:
         return channel_thumbnails
 
     @property
-    def additional_keys(self) -> list[str]:
+    def additional_keys(self) -> List[str]:
         return list(self.additional_properties.keys())
 
     def __getitem__(self, key: str) -> "Thumbnail":

@@ -1,15 +1,10 @@
-from typing import (
-    Any,
-    Type,
-    TypeVar,
-    TYPE_CHECKING,
-)
+from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 if TYPE_CHECKING:
-    from .channel_thumbnails import ChannelThumbnails
+    from ..models.channel_thumbnails import ChannelThumbnails
 
 
 T = TypeVar("T", bound="Channel")
@@ -42,11 +37,9 @@ class Channel:
     video_count: int
     view_count: int
     thumbnails: "ChannelThumbnails"
-    additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
+    additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-    def to_dict(self) -> dict[str, Any]:
-        from .channel_thumbnails import ChannelThumbnails
-
+    def to_dict(self) -> Dict[str, Any]:
         id = self.id
 
         title = self.title
@@ -65,12 +58,9 @@ class Channel:
 
         view_count = self.view_count
 
-        if self.thumbnails:
-            thumbnails = self.thumbnails.to_dict()
-        else:
-            thumbnails = None
+        thumbnails = self.thumbnails.to_dict()
 
-        field_dict: dict[str, Any] = {}
+        field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
@@ -90,8 +80,8 @@ class Channel:
         return field_dict
 
     @classmethod
-    def from_dict(cls: Type[T], src_dict: dict[str, Any]) -> T:
-        from .channel_thumbnails import ChannelThumbnails
+    def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
+        from ..models.channel_thumbnails import ChannelThumbnails
 
         d = src_dict.copy()
         id = d.pop("id")
@@ -112,10 +102,7 @@ class Channel:
 
         view_count = d.pop("view_count")
 
-        thumbnails = None
-        thumbs = d.pop("thumbnails", None)
-        if thumbs is not None:
-            thumbnails = ChannelThumbnails.from_dict(thumbs)
+        thumbnails = ChannelThumbnails.from_dict(d.pop("thumbnails"))
 
         channel = cls(
             id=id,
@@ -134,7 +121,7 @@ class Channel:
         return channel
 
     @property
-    def additional_keys(self) -> list[str]:
+    def additional_keys(self) -> List[str]:
         return list(self.additional_properties.keys())
 
     def __getitem__(self, key: str) -> Any:
