@@ -1,16 +1,10 @@
-from typing import (
-    Any,
-    Type,
-    TypeVar,
-    TYPE_CHECKING,
-)
-
+from typing import TYPE_CHECKING, Any, Dict, List, Type, TypeVar
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 if TYPE_CHECKING:
-    from .video_thumbnails import VideoThumbnails
+    from ..models.video_thumbnails import VideoThumbnails
 
 
 T = TypeVar("T", bound="Video")
@@ -49,11 +43,9 @@ class Video:
     like_count: int
     view_count: int
     thumbnails: "VideoThumbnails"
-    additional_properties: dict[str, Any] = _attrs_field(init=False, factory=dict)
+    additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-    def to_dict(self) -> dict[str, Any]:
-        from .video_thumbnails import VideoThumbnails
-
+    def to_dict(self) -> Dict[str, Any]:
         id = self.id
 
         title = self.title
@@ -77,13 +69,10 @@ class Video:
         like_count = self.like_count
 
         view_count = self.view_count
-        
-        if not isinstance(self.thumbnails, VideoThumbnails):
-            self.thumbnails = VideoThumbnails.from_dict(self.thumbnails)
-        
+
         thumbnails = self.thumbnails.to_dict()
 
-        field_dict: dict[str, Any] = {}
+        field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
         field_dict.update(
             {
@@ -106,8 +95,8 @@ class Video:
         return field_dict
 
     @classmethod
-    def from_dict(cls: Type[T], src_dict: dict[str, Any]) -> T:
-        from .video_thumbnails import VideoThumbnails
+    def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
+        from ..models.video_thumbnails import VideoThumbnails
 
         d = src_dict.copy()
         id = d.pop("id")
@@ -120,7 +109,7 @@ class Video:
 
         published_at = d.pop("published_at")
 
-        category_id = d.pop("category_id", 0)
+        category_id = d.pop("category_id")
 
         channel_id = d.pop("channel_id")
 
@@ -156,7 +145,7 @@ class Video:
         return video
 
     @property
-    def additional_keys(self) -> list[str]:
+    def additional_keys(self) -> List[str]:
         return list(self.additional_properties.keys())
 
     def __getitem__(self, key: str) -> Any:
