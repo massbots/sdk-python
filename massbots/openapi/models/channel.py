@@ -1,4 +1,14 @@
-from typing import Any, Dict, Type, TypeVar, Tuple, Optional, BinaryIO, TextIO, TYPE_CHECKING
+from typing import (
+    Any,
+    Dict,
+    Type,
+    TypeVar,
+    Tuple,
+    Optional,
+    BinaryIO,
+    TextIO,
+    TYPE_CHECKING,
+)
 
 from typing import List
 
@@ -7,15 +17,11 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 
-
 from typing import cast
 from typing import Dict
 
 if TYPE_CHECKING:
-  from .channel_thumbnails import ChannelThumbnails
-
-
-
+    from .channel_thumbnails import ChannelThumbnails
 
 
 T = TypeVar("T", bound="Channel")
@@ -23,20 +29,20 @@ T = TypeVar("T", bound="Channel")
 
 @_attrs_define
 class Channel:
-    """ YouTube channel
+    """YouTube channel
 
-        Attributes:
-            id (str):
-            title (str):
-            description (str):
-            url (str):
-            banner_url (str):
-            comment_count (int):
-            subscriber_count (int):
-            video_count (int):
-            view_count (int):
-            thumbnails (ChannelThumbnails):
-     """
+    Attributes:
+        id (str):
+        title (str):
+        description (str):
+        url (str):
+        banner_url (str):
+        comment_count (int):
+        subscriber_count (int):
+        video_count (int):
+        view_count (int):
+        thumbnails (ChannelThumbnails):
+    """
 
     id: str
     title: str
@@ -47,12 +53,12 @@ class Channel:
     subscriber_count: int
     video_count: int
     view_count: int
-    thumbnails: 'ChannelThumbnails'
+    thumbnails: "ChannelThumbnails"
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
-
 
     def to_dict(self) -> Dict[str, Any]:
         from .channel_thumbnails import ChannelThumbnails
+
         id = self.id
 
         title = self.title
@@ -73,29 +79,29 @@ class Channel:
 
         thumbnails = self.thumbnails.to_dict()
 
-
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "id": id,
-            "title": title,
-            "description": description,
-            "url": url,
-            "banner_url": banner_url,
-            "comment_count": comment_count,
-            "subscriber_count": subscriber_count,
-            "video_count": video_count,
-            "view_count": view_count,
-            "thumbnails": thumbnails,
-        })
+        field_dict.update(
+            {
+                "id": id,
+                "title": title,
+                "description": description,
+                "url": url,
+                "banner_url": banner_url,
+                "comment_count": comment_count,
+                "subscriber_count": subscriber_count,
+                "video_count": video_count,
+                "view_count": view_count,
+                "thumbnails": thumbnails,
+            }
+        )
 
         return field_dict
-
-
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         from .channel_thumbnails import ChannelThumbnails
+
         d = src_dict.copy()
         id = d.pop("id")
 
@@ -120,9 +126,6 @@ class Channel:
         if thumbs is not None:
             thumbnails = ChannelThumbnails.from_dict(thumbs)
 
-
-
-
         channel = cls(
             id=id,
             title=title,
@@ -135,7 +138,6 @@ class Channel:
             view_count=view_count,
             thumbnails=thumbnails,
         )
-
 
         channel.additional_properties = d
         return channel

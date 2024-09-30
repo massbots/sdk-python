@@ -1,4 +1,14 @@
-from typing import Any, Dict, Type, TypeVar, Tuple, Optional, BinaryIO, TextIO, TYPE_CHECKING
+from typing import (
+    Any,
+    Dict,
+    Type,
+    TypeVar,
+    Tuple,
+    Optional,
+    BinaryIO,
+    TextIO,
+    TYPE_CHECKING,
+)
 
 from typing import List
 
@@ -7,31 +17,23 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 
-
-
-
-
-
-
-
 T = TypeVar("T", bound="Thumbnail")
 
 
 @_attrs_define
 class Thumbnail:
-    """ YouTube thumbnail
+    """YouTube thumbnail
 
-        Attributes:
-            url (str):
-            width (int):
-            height (int):
-     """
+    Attributes:
+        url (str):
+        width (int):
+        height (int):
+    """
 
     url: str
     width: int
     height: int
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
-
 
     def to_dict(self) -> Dict[str, Any]:
         url = self.url
@@ -40,18 +42,17 @@ class Thumbnail:
 
         height = self.height
 
-
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "url": url,
-            "width": width,
-            "height": height,
-        })
+        field_dict.update(
+            {
+                "url": url,
+                "width": width,
+                "height": height,
+            }
+        )
 
         return field_dict
-
-
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
@@ -67,7 +68,6 @@ class Thumbnail:
             width=width,
             height=height,
         )
-
 
         thumbnail.additional_properties = d
         return thumbnail

@@ -1,4 +1,14 @@
-from typing import Any, Dict, Type, TypeVar, Tuple, Optional, BinaryIO, TextIO, TYPE_CHECKING
+from typing import (
+    Any,
+    Dict,
+    Type,
+    TypeVar,
+    Tuple,
+    Optional,
+    BinaryIO,
+    TextIO,
+    TYPE_CHECKING,
+)
 
 from typing import List
 
@@ -10,11 +20,11 @@ T = TypeVar("T", bound="Error")
 
 @_attrs_define
 class Error:
-    """ API error
+    """API error
 
-        Attributes:
-            error (str):
-     """
+    Attributes:
+        error (str):
+    """
 
     error: str
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
