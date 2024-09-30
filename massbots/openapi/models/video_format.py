@@ -104,12 +104,10 @@ class VideoFormats:
         # Iterate through the input dictionary and convert each item to VideoFormat
         for format_name, format_data in d.items():
             if isinstance(format_data, dict):
-                format_data['format'] = format_name  # Set the format name from the key
+                format_data["format"] = format_name  # Set the format name from the key
                 formats_list.append(VideoFormat.from_dict(format_data))
 
-        video_formats = cls(
-            formats=formats_list
-        )
+        video_formats = cls(formats=formats_list)
 
         # If there are any additional properties, assign them
         video_formats.additional_properties = d
@@ -118,9 +116,9 @@ class VideoFormats:
     def to_json(self) -> str:
         """Returns the JSON representation of the VideoFormats instance"""
         return json.dumps(self.to_dict())
-    
+
     def filter(self, cached: bool) -> list[VideoFormat]:
-        return {fmt.format:fmt for fmt in self.formats if fmt.cached}
+        return {fmt.format: fmt for fmt in self.formats if fmt.cached}
 
     @classmethod
     def from_json(cls: Type[T], json_str: str) -> T | None:
