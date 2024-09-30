@@ -6,7 +6,7 @@ from typing import Callable
 
 import requests
 
-from . import models
+from .openapi import models
 from .error import ApiError
 
 
