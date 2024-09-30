@@ -1,6 +1,6 @@
 from __future__ import annotations
 from .openapi.models import Video, Channel, VideoFormat, DownloadResult, Balance
-from typing import ClassVar, Any, Set
+from typing import ClassVar, Any
 import json
 
 
@@ -32,7 +32,7 @@ class _VideoFormats:
           were set at model initialization. Other fields with value `None`
           are ignored.
         """
-        excluded_fields: Set[str] = set([])
+        excluded_fields: set[str] = set([])
 
         _dict = self.model_dump(
             by_alias=True,
