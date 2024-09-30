@@ -7,7 +7,7 @@ from .download_result import DownloadResult
 from .error import Error
 from .thumbnail import Thumbnail
 from .video import Video
-from .video_format import VideoFormat
+from .video_format import VideoFormat, VideoFormats
 from .video_thumbnails import VideoThumbnails
 
 __all__ = (
