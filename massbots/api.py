@@ -1,76 +1,194 @@
+"""Realisation of Api class"""
+
 from __future__ import annotations
+import time
+from typing import Callable
 
 import requests
-import time
+
 from . import models
 from .error import ApiError
-from typing import List, Callable, Optional, Dict
 
 
 class Api:
-    base_url: str = "https://api.massbots.xyz"
+    """
+    The `Api` class provides methods to interact with the massbots.xyz API,
+    allowing you to retrieve information about videos,channels, perform searches,
+    and manage downloads.
+    """
 
-    def __init__(self, token: str, bot_id: Optional[str] = None):
+    base_url: str = "https://api.massbots.xyz"
+    request_timeout = 300
+
+    def __init__(self, token: str, bot_id: str | None = None):
+        """
+        Initializes the Api instance with the provided token and optional bot_id.
+
+        Args:
+            token (str): The API token for authentication.
+            bot_id (str | None): An optional bot ID for bot-specific API calls.
+        """
         self._token = token
         self._bot_id = bot_id
 
     def balance(self) -> int:
-        return models.Balance.from_dict(self._do(f"{self.base_url}/me/balance")).balance
+        """
+        Retrieves the balance of the authenticated account.
 
-    def video_formats(self, id: str) -> models._VideoFormats:
-        data = self._do(f"{self.base_url}/video/{id}/formats")
+        Returns:
+            int: The balance of the account.
+        """
+        return models.Balance.from_dict(
+            self._query_api(f"{self.base_url}/me/balance")
+        ).balance
+
+    def video_formats(self, video_id: str) -> models._VideoFormats:
+        """
+        Fetches available video formats for a given video ID.
+
+        Args:
+            video_id (str): The ID of the video.
+
+        Returns:
+            models._VideoFormats: An object containing information about available video formats.
+        """
+        data = self._query_api(f"{self.base_url}/video/{video_id}/formats")
+
+        # TODO: Fix calling private field
         return models._VideoFormats.from_dict(data)
 
-    def channel(self, id: str) -> models.Channel:
-        return models.Channel.from_dict(self._do(f"{self.base_url}/channel/{id}"))
+    def channel(self, channel_id: str) -> models.Channel:
+        """
+        Retrieves information about a specific channel.
 
-    def search(self, query: str) -> List[Video]:
-        data = self._do(f"{self.base_url}/search?q={query}")
+        Args:
+            channel_id (str): The ID of the channel.
+
+        Returns:
+            models.Channel: An object containing the channel information.
+        """
+        return models.Channel.from_dict(
+            self._query_api(f"{self.base_url}/channel/{channel_id}")
+        )
+
+    def search(self, query: str) -> list[Video]:
+        """
+        Searches for videos based on a query string.
+
+        Args:
+            query (str): The search query.
+
+        Returns:
+            list[Video]: A list of Video objects matching the search criteria.
+        """
+        data = self._query_api(f"{self.base_url}/search?q={query}")
         videos = [models.Video.from_dict(video) for video in data]
         return [Video(video, self, video.id) for video in videos]
 
-    def video(self, id: str) -> Video:
-        video = models.Video.from_dict(self._do(f"{self.base_url}/video/{id}"))
-        return Video(video, self, id)
+    def video(self, video_id: str) -> Video:
+        """
+        Retrieves details about a specific video.
 
-    def download(self, id: str, format: str) -> DownloadResult:
-        r = models.DownloadResult.from_dict(
-            self._do(f"{self.base_url}/video/{id}/download/{format}")
+        Args:
+            video_id (str): The ID of the video.
+
+        Returns:
+            Video: A Video object containing the video's details.
+        """
+        video = models.Video.from_dict(
+            self._query_api(f"{self.base_url}/video/{video_id}")
         )
-        return DownloadResult(r, self, id, format)
+        return Video(video, self, video_id)
 
-    def _do(self, url: str):
+    def download(self, video_id: str, video_format: str) -> DownloadResult:
+        """
+        Initiates a download for a video in a specified format.
+
+        Args:
+            video_id (str): The ID of the video.
+            video_format (str): The desired format for the download (e.g. 360p, 720p).
+
+        Returns:
+            DownloadResult: A DownloadResult object to track the download progress.
+        """
+        r = models.DownloadResult.from_dict(
+            self._query_api(f"{self.base_url}/video/{video_id}/download/{video_format}")
+        )
+        return DownloadResult(r, self, video_id, video_format)
+
+    def _query_api(self, url: str) -> dict:
+        """
+        Internal method to send a GET request to the specified API URL.
+
+        Args:
+            url (str): The API endpoint URL.
+
+        Returns:
+            dict: The JSON response from the API.
+
+        Raises:
+            ApiError: If the API response status code is not 200.
+        """
         headers = {"X-Token": f"{self._token}"}
         if self._bot_id is not None:
             headers["X-Bot-Id"] = self._bot_id
+        
+        response = self._get_request(url, headers=headers)
+        if response.status_code != requests.codes.ok:
+            raise ApiError(status=response.status_code, data=response.json())
 
-        resp = requests.get(url, headers=headers)
-        data = resp.json()
+        return response.json()
 
-        if resp.status_code != 200:
-            raise ApiError(status=resp.status_code, data=data)
+    @classmethod
+    def _get_request(cls, *args, **kwargs):
+        """
+        A static method to perform a GET request using the requests library.
 
-        return data
+        Returns:
+            requests.Response: The response object.
+        """
+        return requests.get(*args, **kwargs, timeout=cls.request_timeout)
 
 
 class DownloadResult(models.DownloadResult):
-    def __init__(self, r: models.DownloadResult, api, video_id, format):
+    """
+    Represents the result of a video download process and provides methods
+    to track the download's readiness status.
+    """
+
+    def __init__(
+        self, r: models.DownloadResult, api: Api, video_id: str, video_format: str
+    ):
+        """
+        Initializes the DownloadResult instance.
+
+        Args:
+            r (models.DownloadResult): The raw download result from the API.
+            api (Api): The Api instance used for making requests.
+            video_id (str): The ID of the video being downloaded.
+            video_format (str): The format of the video being downloaded.
+        """
         super().__init__(**r.to_dict())
-        self._api = api
-        self._video_id = video_id
-        self._format = format
+        self._api: Api = api
+        self._video_id: str = video_id
+        self._format: str = video_format
 
     def wait_until_ready(
         self,
         delay: float = 5.0,
-        callback: Callable[[models.DownloadResult], bool] = None,
+        callback: Callable[[models.DownloadResult], bool] | None = None,
     ) -> models.DownloadResult:
         """
-        Waits until the download result is ready or failed.
+        Waits until the download result is either ready or failed.
 
         Args:
-            delay (float): Interval between polling requests. Default is 5.0 seconds.
-            callback (Callable[[dl.Result], bool]): Callback function for each iteration.
+            delay (float): Interval between polling requests in seconds. Default is 5.0.
+            callback (Callable[[models.DownloadResult], bool], optional):
+                      A callback function called on each iteration.
+                      If it returns True, the waiting is interrupted.
+
+        Returns:
+            models.DownloadResult: The final download result when ready or failed.
         """
         if not delay or delay <= 0:
             delay = 1.0
@@ -85,13 +203,40 @@ class DownloadResult(models.DownloadResult):
 
 
 class Video(models.Video):
-    def __init__(self, r: models.Video, api, video_id):
+    """
+    Represents a video entity and provides methods to interact with its details and formats.
+    """
+
+    def __init__(self, r: models.Video, api: Api, video_id: str):
+        """
+        Initializes the Video instance.
+
+        Args:
+            r (models.Video): The raw video data from the API.
+            api (Api): The Api instance used for making requests.
+            video_id (str): The ID of the video.
+        """
         super().__init__(**r.to_dict())
-        self._api = api
-        self._video_id = video_id
+        self._api: Api = api
+        self._video_id: str = video_id
 
     def formats(self) -> models._VideoFormats:
+        """
+        Retrieves the available formats for this video.
+
+        Returns:
+            models._VideoFormats: An object containing information about available video formats.
+        """
         return self._api.video_formats(self.id)
 
-    def download(self, format: str) -> DownloadResult:
-        return self._api.download(self.id, format)
+    def download(self, video_format: str) -> DownloadResult:
+        """
+        Initiates a download for this video in a specified format.
+
+        Args:
+            video_format (str): The desired format for the download (e.g. 360p, 720p).
+
+        Returns:
+            DownloadResult: An object representing the download process.
+        """
+        return self._api.download(self.id, video_format)
