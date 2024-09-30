@@ -1,24 +1,13 @@
 from typing import (
     Any,
-    Dict,
     Type,
     TypeVar,
-    Tuple,
-    Optional,
-    BinaryIO,
-    TextIO,
     TYPE_CHECKING,
 )
-
-from typing import List
-
 
 from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
-
-from typing import cast
-from typing import Dict
 
 if TYPE_CHECKING:
     from .thumbnail import Thumbnail
@@ -31,21 +20,21 @@ T = TypeVar("T", bound="VideoThumbnails")
 class VideoThumbnails:
     """ """
 
-    additional_properties: Dict[str, "Thumbnail"] = _attrs_field(
+    additional_properties: dict[str, "Thumbnail"] = _attrs_field(
         init=False, factory=dict
     )
 
-    def to_dict(self) -> Dict[str, Any]:
+    def to_dict(self) -> dict[str, Any]:
         from .thumbnail import Thumbnail
 
-        field_dict: Dict[str, Any] = {}
+        field_dict: dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
             field_dict[prop_name] = prop.to_dict()
 
         return field_dict
 
     @classmethod
-    def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
+    def from_dict(cls: Type[T], src_dict: dict[str, Any]) -> T:
         from .thumbnail import Thumbnail
 
         d = src_dict.copy()
@@ -61,7 +50,7 @@ class VideoThumbnails:
         return video_thumbnails
 
     @property
-    def additional_keys(self) -> List[str]:
+    def additional_keys(self) -> list[str]:
         return list(self.additional_properties.keys())
 
     def __getitem__(self, key: str) -> "Thumbnail":
