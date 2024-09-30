@@ -1,4 +1,14 @@
-from typing import Any, Dict, Type, TypeVar, Tuple, Optional, BinaryIO, TextIO, TYPE_CHECKING
+from typing import (
+    Any,
+    Dict,
+    Type,
+    TypeVar,
+    Tuple,
+    Optional,
+    BinaryIO,
+    TextIO,
+    TYPE_CHECKING,
+)
 
 from typing import List
 
@@ -7,41 +17,32 @@ from attrs import define as _attrs_define
 from attrs import field as _attrs_field
 
 
-
-
-
-
-
-
-
 T = TypeVar("T", bound="Balance")
 
 
 @_attrs_define
 class Balance:
-    """ Token balance in points.
+    """Token balance in points.
 
-        Attributes:
-            balance (int):
-     """
+    Attributes:
+        balance (int):
+    """
 
     balance: int
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
 
-
     def to_dict(self) -> Dict[str, Any]:
         balance = self.balance
 
-
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "balance": balance,
-        })
+        field_dict.update(
+            {
+                "balance": balance,
+            }
+        )
 
         return field_dict
-
-
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
@@ -51,7 +52,6 @@ class Balance:
         balance = cls(
             balance=balance,
         )
-
 
         balance.additional_properties = d
         return balance

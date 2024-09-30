@@ -1,4 +1,14 @@
-from typing import Any, Dict, Type, TypeVar, Tuple, Optional, BinaryIO, TextIO, TYPE_CHECKING
+from typing import (
+    Any,
+    Dict,
+    Type,
+    TypeVar,
+    Tuple,
+    Optional,
+    BinaryIO,
+    TextIO,
+    TYPE_CHECKING,
+)
 
 from typing import List
 
@@ -13,10 +23,7 @@ from typing import cast
 from typing import Dict
 
 if TYPE_CHECKING:
-  from .video_thumbnails import VideoThumbnails
-
-
-
+    from .video_thumbnails import VideoThumbnails
 
 
 T = TypeVar("T", bound="Video")
@@ -24,23 +31,23 @@ T = TypeVar("T", bound="Video")
 
 @_attrs_define
 class Video:
-    """ YouTube video
+    """YouTube video
 
-        Attributes:
-            id (str):
-            title (str):
-            description (str):
-            url (str):
-            published_at (str):
-            category_id (str):
-            channel_id (str):
-            channel_title (str):
-            channel_url (str):
-            comment_count (int):
-            like_count (int):
-            view_count (int):
-            thumbnails (VideoThumbnails):
-     """
+    Attributes:
+        id (str):
+        title (str):
+        description (str):
+        url (str):
+        published_at (str):
+        category_id (str):
+        channel_id (str):
+        channel_title (str):
+        channel_url (str):
+        comment_count (int):
+        like_count (int):
+        view_count (int):
+        thumbnails (VideoThumbnails):
+    """
 
     id: str
     title: str
@@ -54,9 +61,8 @@ class Video:
     comment_count: int
     like_count: int
     view_count: int
-    thumbnails: 'VideoThumbnails'
+    thumbnails: "VideoThumbnails"
     additional_properties: Dict[str, Any] = _attrs_field(init=False, factory=dict)
-
 
     def to_dict(self) -> Dict[str, Any]:
         from .video_thumbnails import VideoThumbnails
@@ -87,28 +93,27 @@ class Video:
 
         thumbnails = self.thumbnails.to_dict()
 
-
         field_dict: Dict[str, Any] = {}
         field_dict.update(self.additional_properties)
-        field_dict.update({
-            "id": id,
-            "title": title,
-            "description": description,
-            "url": url,
-            "published_at": published_at,
-            "category_id": category_id,
-            "channel_id": channel_id,
-            "channel_title": channel_title,
-            "channel_url": channel_url,
-            "comment_count": comment_count,
-            "like_count": like_count,
-            "view_count": view_count,
-            "thumbnails": thumbnails,
-        })
+        field_dict.update(
+            {
+                "id": id,
+                "title": title,
+                "description": description,
+                "url": url,
+                "published_at": published_at,
+                "category_id": category_id,
+                "channel_id": channel_id,
+                "channel_title": channel_title,
+                "channel_url": channel_url,
+                "comment_count": comment_count,
+                "like_count": like_count,
+                "view_count": view_count,
+                "thumbnails": thumbnails,
+            }
+        )
 
         return field_dict
-
-
 
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
@@ -141,9 +146,6 @@ class Video:
 
         thumbnails = VideoThumbnails.from_dict(d.pop("thumbnails"))
 
-
-
-
         video = cls(
             id=id,
             title=title,
@@ -159,7 +161,6 @@ class Video:
             view_count=view_count,
             thumbnails=thumbnails,
         )
-
 
         video.additional_properties = d
         return video

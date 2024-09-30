@@ -1,4 +1,14 @@
-from typing import Any, Dict, Type, TypeVar, Tuple, Optional, BinaryIO, TextIO, TYPE_CHECKING
+from typing import (
+    Any,
+    Dict,
+    Type,
+    TypeVar,
+    Tuple,
+    Optional,
+    BinaryIO,
+    TextIO,
+    TYPE_CHECKING,
+)
 
 from typing import List
 
@@ -10,10 +20,7 @@ from typing import cast
 from typing import Dict
 
 if TYPE_CHECKING:
-  from .thumbnail import Thumbnail
-
-
-
+    from .thumbnail import Thumbnail
 
 
 T = TypeVar("T", bound="ChannelThumbnails")
@@ -21,36 +28,31 @@ T = TypeVar("T", bound="ChannelThumbnails")
 
 @_attrs_define
 class ChannelThumbnails:
-    """ 
-     """
+    """ """
 
-    additional_properties: Dict[str, 'Thumbnail'] = _attrs_field(init=False, factory=dict)
-
+    additional_properties: Dict[str, "Thumbnail"] = _attrs_field(
+        init=False, factory=dict
+    )
 
     def to_dict(self) -> Dict[str, Any]:
         from .thumbnail import Thumbnail
-        
+
         field_dict: Dict[str, Any] = {}
         for prop_name, prop in self.additional_properties.items():
             field_dict[prop_name] = prop.to_dict()
 
         return field_dict
 
-
-
     @classmethod
     def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
         from .thumbnail import Thumbnail
-        d = src_dict.copy()
-        channel_thumbnails = cls(
-        )
 
+        d = src_dict.copy()
+        channel_thumbnails = cls()
 
         additional_properties = {}
         for prop_name, prop_dict in d.items():
             additional_property = Thumbnail.from_dict(prop_dict)
-
-
 
             additional_properties[prop_name] = additional_property
 
@@ -61,10 +63,10 @@ class ChannelThumbnails:
     def additional_keys(self) -> List[str]:
         return list(self.additional_properties.keys())
 
-    def __getitem__(self, key: str) -> 'Thumbnail':
+    def __getitem__(self, key: str) -> "Thumbnail":
         return self.additional_properties[key]
 
-    def __setitem__(self, key: str, value: 'Thumbnail') -> None:
+    def __setitem__(self, key: str, value: "Thumbnail") -> None:
         self.additional_properties[key] = value
 
     def __delitem__(self, key: str) -> None:
