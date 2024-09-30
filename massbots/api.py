@@ -6,7 +6,7 @@ from typing import Callable
 
 import requests
 
-from .openapi import models
+from . import models
 from .error import ApiError
 
 
@@ -56,7 +56,7 @@ class Api:
 
         return models.VideoFormats.from_dict(data)
 
-    def channel(self, channel_id: str) -> models.Channel:
+    def channel(self, channel_id: str) -> models.CustomChannel:
         """
         Retrieves information about a specific channel.
 
@@ -64,9 +64,9 @@ class Api:
             channel_id (str): The ID of the channel.
 
         Returns:
-            models.Channel: An object containing the channel information.
+            models.CustomChannel: An object containing the channel information.
         """
-        return models.Channel.from_dict(
+        return models.CustomChannel.from_dict(
             self._query_api(f"{self.base_url}/channel/{channel_id}")
         )
 
@@ -80,8 +80,10 @@ class Api:
         Returns:
             list[Video]: A list of Video objects matching the search criteria.
         """
+        from pprint import pprint
         data = self._query_api(f"{self.base_url}/search?q={query}")
-        videos = [models.Video.from_dict(video) for video in data]
+        pprint(data)
+        videos = [models.CustomVideo.from_dict(video) for video in data]
         return [Video(video, self, video.id) for video in videos]
 
     def video(self, video_id: str) -> Video:
@@ -94,7 +96,7 @@ class Api:
         Returns:
             Video: A Video object containing the video's details.
         """
-        video = models.Video.from_dict(
+        video = models.CustomVideo.from_dict(
             self._query_api(f"{self.base_url}/video/{video_id}")
         )
         return Video(video, self, video_id)
@@ -201,17 +203,17 @@ class DownloadResult(models.DownloadResult):
             time.sleep(delay)
 
 
-class Video(models.Video):
+class Video(models.CustomVideo):
     """
     Represents a video entity and provides methods to interact with its details and formats.
     """
 
-    def __init__(self, r: models.Video, api: Api, video_id: str):
+    def __init__(self, r: models.CustomVideo, api: Api, video_id: str):
         """
         Initializes the Video instance.
 
         Args:
-            r (models.Video): The raw video data from the API.
+            r (models.CustomVideo): The raw video data from the API.
             api (Api): The Api instance used for making requests.
             video_id (str): The ID of the video.
         """
