@@ -1,252 +1,177 @@
-from typing import Any, Dict, Type, TypeVar
+from __future__ import annotations
+import time
+from typing import Callable
 
-from attrs import define as _attrs_define, field as _attrs_field
+from pprint import pformat
+from pydantic import BaseModel, Field, ConfigDict
 
-from .openapi.models import *
-
-
-T = TypeVar("T", bound="Channel")
-
-
-@_attrs_define
-class CustomChannel(Channel):
-    def to_dict(self) -> Dict[str, Any]:
-        id = self.id
-        title = self.title
-        description = self.description
-        url = self.url
-        banner_url = self.banner_url
-        comment_count = self.comment_count
-        subscriber_count = self.subscriber_count
-        video_count = self.video_count
-        view_count = self.view_count
-
-        # Handle case where thumbnails might be None
-        thumbnails = self.thumbnails.to_dict() if self.thumbnails is not None else None
-
-        field_dict: Dict[str, Any] = {}
-        field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "id": id,
-                "title": title,
-                "description": description,
-                "url": url,
-                "banner_url": banner_url,
-                "comment_count": comment_count,
-                "subscriber_count": subscriber_count,
-                "video_count": video_count,
-                "view_count": view_count,
-                "thumbnails": thumbnails,
-            }
-        )
-
-        return field_dict
-
-    @classmethod
-    def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
-        d = src_dict.copy()
-        id = d.pop("id")
-
-        title = d.pop("title")
-
-        description = d.pop("description")
-
-        url = d.pop("url")
-
-        banner_url = d.pop("banner_url")
-
-        comment_count = d.pop("comment_count")
-
-        subscriber_count = d.pop("subscriber_count")
-
-        video_count = d.pop("video_count")
-
-        view_count = d.pop("view_count")
-
-        # Handle case where thumbnails might be None
-        thumbnails_data = d.pop("thumbnails", None)
-        thumbnails = (
-            ChannelThumbnails.from_dict(thumbnails_data)
-            if thumbnails_data is not None
-            else None
-        )
-
-        channel = cls(
-            id=id,
-            title=title,
-            description=description,
-            url=url,
-            banner_url=banner_url,
-            comment_count=comment_count,
-            subscriber_count=subscriber_count,
-            video_count=video_count,
-            view_count=view_count,
-            thumbnails=thumbnails,
-        )
-
-        channel.additional_properties = d
-        return channel
+from . import api
 
 
-T = TypeVar("T", bound="Video")
+class APIBaseModel(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    def __str__(self) -> str:
+        return pformat(self.model_dump(exclude_none=True))
+
+    def __repr__(self) -> str:
+        return str(self)
 
 
-@_attrs_define
-class CustomVideo(Video):
-    category_id: str = None
-
-    def to_dict(self) -> Dict[str, Any]:
-        id = self.id
-        title = self.title
-        description = self.description
-        url = self.url
-        published_at = self.published_at
-        channel_id = self.channel_id
-        channel_title = self.channel_title
-        channel_url = self.channel_url
-        comment_count = self.comment_count
-        like_count = self.like_count
-        view_count = self.view_count
-        
-        if not isinstance(self.thumbnails, dict):
-            # Handle case where thumbnails might be None
-            thumbnails = self.thumbnails.to_dict() if self.thumbnails else None
-        else:
-            # Handle case when self.thumbnails is a dict
-            thumbnails = self.thumbnails
-
-        field_dict: Dict[str, Any] = {}
-        field_dict.update(self.additional_properties)
-        field_dict.update(
-            {
-                "id": id,
-                "title": title,
-                "description": description,
-                "url": url,
-                "published_at": published_at,
-                "channel_id": channel_id,
-                "channel_title": channel_title,
-                "channel_url": channel_url,
-                "comment_count": comment_count,
-                "like_count": like_count,
-                "view_count": view_count,
-                "thumbnails": thumbnails,
-            }
-        )
-
-        # Conditionally add category_id if it is not None
-        if self.category_id is not None:
-            field_dict["category_id"] = self.category_id
-
-        return field_dict
-
-    @classmethod
-    def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
-
-        d = src_dict.copy()
-        id = d.pop("id")
-        title = d.pop("title")
-        description = d.pop("description")
-        url = d.pop("url")
-        published_at = d.pop("published_at")
-
-        # Handle case where category_id might be missing
-        category_id = d.pop("category_id", None)
-
-        channel_id = d.pop("channel_id")
-        channel_title = d.pop("channel_title")
-        channel_url = d.pop("channel_url")
-        comment_count = d.pop("comment_count")
-        like_count = d.pop("like_count")
-        view_count = d.pop("view_count")
-
-        # Handle case where thumbnails might be None
-        thumbnails_data = d.pop("thumbnails", None)
-        thumbnails = (
-            VideoThumbnails.from_dict(thumbnails_data) if thumbnails_data else None
-        )
-
-        video = cls(
-            id=id,
-            title=title,
-            description=description,
-            url=url,
-            published_at=published_at,
-            category_id=category_id,
-            channel_id=channel_id,
-            channel_title=channel_title,
-            channel_url=channel_url,
-            comment_count=comment_count,
-            like_count=like_count,
-            view_count=view_count,
-            thumbnails=thumbnails,
-        )
-
-        video.additional_properties = d
-        return video
+class Error(APIBaseModel):
+    error: str
 
 
-T = TypeVar("T", bound="CustomVideoFormat")
+class Balance(APIBaseModel):
+    balance: int
 
 
-class CustomVideoFormat(VideoFormat):
-    file_size: int | None = None
-
-    def __init__(self, format_: str, cached: bool, file_size: int | None = None):
-        super().__init__(format_=format_, cached=cached, file_size=file_size)
-
-    def to_dict(self) -> Dict[str, Any]:
-        field_dict = super().to_dict()
-
-        # Remove file_size if it's None
-        if self.file_size is None:
-            field_dict.pop("file_size", None)
-
-        return field_dict
-
-    @classmethod
-    def from_dict(cls: Type[T], src_dict: Dict[str, Any]) -> T:
-        # Handle the case where file_size might be missing or None
-        file_size = src_dict.get("file_size")
-        return cls(
-            format_=src_dict["format"], cached=src_dict["cached"], file_size=file_size
-        )
+class Thumbnail(APIBaseModel):
+    url: str
+    width: int
+    height: int
 
 
-@_attrs_define
-class VideoFormats:
-    """A collection of video formats"""
+class Channel(APIBaseModel):
+    id: str
+    title: str
+    description: str
+    url: str
+    banner_url: str
+    comment_count: int
+    subscriber_count: int
+    video_count: int
+    view_count: int
+    thumbnails: dict[str, Thumbnail] | None = Field(default=None)
 
-    formats: Dict[str, CustomVideoFormat] = _attrs_field(factory=dict)
 
-    def to_dict(self) -> Dict[str, Any]:
-        # Convert each CustomVideoFormat object in the dictionary to its dictionary representation
-        return {key: value.to_dict() for key, value in self.formats.items()}
+class VideoFormat(APIBaseModel):
+    format: str
+    cached: bool
+    file_size: int | None = Field(default=None)
 
-    @classmethod
-    def from_dict(cls, src_dict: Dict[str, Any]) -> "VideoFormats":
-        # Convert the dictionary into CustomVideoFormat objects
-        formats = {
-            key: CustomVideoFormat.from_dict(value) for key, value in src_dict.items()
-        }
-        return cls(formats=formats)
+    def __str__(self) -> str:
+        return pformat(self.model_dump(exclude_none=False))
 
-    def add_format(self, video_format: CustomVideoFormat) -> None:
-        # Add a new format to the collection
-        self.formats[video_format.format_] = video_format
 
+class VideoFormats(dict[str, VideoFormat]):
     def filter(self, cached: bool):
-        return {u: v for u, v in self.formats.items() if v.cached == cached}
+        return {u: v for u, v in self.items() if v.cached == cached}
 
-    def __getitem__(self, key: str) -> CustomVideoFormat:
-        return self.formats[key]
 
-    def __setitem__(self, key: str, value: CustomVideoFormat) -> None:
-        self.formats[key] = value
+class DownloadResultModel(APIBaseModel):
+    status: str
+    file_id: str | None = Field(default=None)
 
-    def __delitem__(self, key: str) -> None:
-        del self.formats[key]
 
-    def __contains__(self, key: str) -> bool:
-        return key in self.formats
+class DownloadResult:
+    """
+    Represents the result of a video download process and provides methods
+    to track the download's readiness status.
+    """
+
+    def __init__(
+        self,
+        result_model: DownloadResultModel,
+        api: api.Api,
+        video_id: str,
+        video_format: str,
+    ):
+        """
+        Initializes the DownloadResult instance.
+
+        Args:
+            r (models.DownloadResult): The raw download result from the API.
+            api (Api): The Api instance used for making requests.
+            video_id (str): The ID of the video being downloaded.
+            video_format (str): The format of the video being downloaded.
+        """
+        self.result_model = result_model
+        self._api: api.Api = api
+        self._video_id: str = video_id
+        self._format: str = video_format
+
+    def wait_until_ready(
+        self,
+        delay: float = 5.0,
+        callback: Callable[[DownloadResultModel], bool] | None = None,
+    ) -> DownloadResultModel:
+        """
+        Waits until the download result is either ready or failed.
+
+        Args:
+            delay (float): Interval between polling requests in seconds. Default is 5.0.
+            callback (Callable[[models.DownloadResult], bool], optional):
+                      A callback function called on each iteration.
+                      If it returns True, the waiting is interrupted.
+
+        Returns:
+            models.DownloadResult: The final download result when ready or failed.
+        """
+        if not delay or delay <= 0:
+            delay = 1.0
+
+        while True:
+            r = self._api.download(self._video_id, self._format)
+            if callback and callback(r):
+                return r
+            if r.status in ("ready", "failed"):
+                return r
+            time.sleep(delay)
+
+    def __getattr__(self, name):
+        # Delegate attribute access to video_model
+        return getattr(self.result_model, name)
+
+
+class VideoModel(APIBaseModel):
+    id: str
+    title: str
+    description: str
+    url: str
+    published_at: str
+    category_id: str | None = Field(default=None)
+    channel_id: str
+    channel_title: str
+    channel_url: str
+    comment_count: int
+    like_count: int
+    view_count: int
+    thumbnails: dict[str, Thumbnail] | None = Field(default=None)
+
+
+class Video:
+    def __init__(self, api: api.Api, video_model: VideoModel) -> None:
+        self._api = api
+        self.video_model = video_model
+
+    def formats(self) -> VideoFormats:
+        """
+        Retrieves the available formats for this video.
+
+        Returns:
+            models.VideoFormats: An object containing information about available video formats.
+        """
+        return self._api.video_formats(self.video_model.id)
+
+    def download(self, video_format: str) -> DownloadResult:
+        """
+        Initiates a download for this video in a specified format.
+
+        Args:
+            video_format (str): The desired format for the download (e.g. 360p, 720p).
+
+        Returns:
+            DownloadResult: An object representing the download process.
+        """
+        return self._api.download(self.video_model.id, video_format)
+
+    def __str__(self) -> str:
+        return pformat(self.video_model)
+
+    def __getattr__(self, name):
+        # Delegate attribute access to video_model
+        return getattr(self.video_model, name)
+
+    def __repr__(self) -> str:
+        return pformat(self.video_model)
