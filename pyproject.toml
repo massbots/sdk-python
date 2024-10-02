@@ -9,6 +9,8 @@ include = ["massbots/openapi/py.typed"]
 
 [tool.poetry.dependencies]
 python = "^3.11"
+pydantic = "^2.9.2"
+requests = "^2.32.3"
 
 [build-system]
 requires = ["poetry-core"]
