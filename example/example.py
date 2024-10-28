@@ -13,6 +13,8 @@ mb = massbots.Api(
 
 print(f"Balance: {mb.balance()}")
 
+print(f"Stats: {mb.stats()}")
+
 video = mb.video("dQw4w9WgXcQ")
 print(f"Video: {video.title}")
 
