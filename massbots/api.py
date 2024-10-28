@@ -68,7 +68,7 @@ class Api:
         data: dict = self._query_api(f"{self.base_url}/channel/{channel_id}")
         return models.Channel.model_validate(data)
 
-    def search(self, query: str) -> list[models.Video]:
+    def search(self, query: str, kind: str = "video") -> list[models.Video] | list[models.Channel]:
         """
         Searches for videos based on a query string.
 
@@ -78,9 +78,16 @@ class Api:
         Returns:
             list[Video]: A list of Video objects matching the search criteria.
         """
-        data = self._query_api(f"{self.base_url}/search?q={query}")
-        videos = [models.VideoModel.model_validate(video_data) for video_data in data]
-        return [models.Video(self, video) for video in videos]
+        match kind:
+            case "video":
+                data = self._query_api(f"{self.base_url}/search?q={query}&kind={kind}")
+                videos = [models.VideoModel.model_validate(video_data) for video_data in data]
+                return [models.Video(self, video) for video in videos]
+            case "channel":
+                data = self._query_api(f"{self.base_url}/search?q={query}&kind={kind}")
+                return [models.Channel.model_validate(channel_data) for channel_data in data]
+            case _:
+                raise ValueError(f"Invalid kind for search: {kind}")
 
     def video(self, video_id: str) -> models.Video:
         """
