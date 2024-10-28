@@ -38,6 +38,13 @@ class Api:
         """
         data: dict = self._query_api(f"{self.base_url}/me/balance")
         return models.Balance.model_validate(data).balance
+    
+    def stats(self) -> list[models.Stat]:
+        """
+        Fetches the stats of the user
+        """
+        data: dict = self._query_api(f"{self.base_url}/me/stats")
+        return [models.Stat.model_validate(stat) for stat in data]
 
     def video_formats(self, video_id: str) -> models.VideoFormats:
         """

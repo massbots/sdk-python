@@ -26,6 +26,12 @@ class Balance(APIBaseModel):
     balance: int
 
 
+class Stat(APIBaseModel):
+    date: str
+    request_type: str
+    charged: int
+
+
 class Thumbnail(APIBaseModel):
     url: str
     width: int | None = Field(default=None)
