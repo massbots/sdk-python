@@ -9,7 +9,7 @@ from . import api
 
 
 class APIBaseModel(BaseModel):
-    model_config = ConfigDict(extra="forbid")
+    model_config = ConfigDict()
 
     def __str__(self) -> str:
         return pformat(self.model_dump(exclude_none=True))
@@ -28,8 +28,8 @@ class Balance(APIBaseModel):
 
 class Thumbnail(APIBaseModel):
     url: str
-    width: int
-    height: int
+    width: int | None = Field(default=None)
+    height: int | None = Field(default=None)
 
 
 class Channel(APIBaseModel):
