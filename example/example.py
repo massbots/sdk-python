@@ -28,7 +28,7 @@ channel = mb.channel(video.channel_id)
 print(f"Channel: {channel.title}")
 
 search = mb.search("Rick Astley")
-print(f"Search: {len(search)} videos")
+print(f"Search: {len(search)} items")
 
 # Get the available formats from API
 formats = video.formats()
