@@ -70,13 +70,14 @@ class Api:
 
     def search(self, query: str, kind: str = "video") -> list[models.Video] | list[models.Channel]:
         """
-        Searches for videos based on a query string.
+        Searches for videos or channel based on a query string and kind of results.
 
         Args:
             query (str): The search query.
+            kind (str): The type of results to retrieve ("video" or "channel").
 
         Returns:
-            list[Video]: A list of Video objects matching the search criteria.
+            list: a list of videos or channels
         """
         match kind:
             case "video":
