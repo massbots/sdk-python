@@ -128,6 +128,7 @@ class VideoModel(APIBaseModel):
     id: str
     title: str
     description: str
+    duration: str
     url: str
     published_at: str
     category_id: str | None = Field(default=None)
