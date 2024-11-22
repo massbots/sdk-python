@@ -38,7 +38,7 @@ class Api:
         """
         data: dict = self._query_api(f"{self.base_url}/me/balance")
         return models.Balance.model_validate(data).balance
-    
+
     def stats(self) -> list[models.Stat]:
         """
         Fetches the stats of the user
@@ -75,7 +75,23 @@ class Api:
         data: dict = self._query_api(f"{self.base_url}/channel/{channel_id}")
         return models.Channel.model_validate(data)
 
-    def search(self, query: str, kind: str = "video") -> list[models.Video] | list[models.Channel]:
+    def channel_feed(self, channel_id: str) -> models.ChannelFeed:
+        """
+        Retrieves videos of a specific channel.
+        Return only new videos.
+
+        Args:
+            channel_id (str): The ID of the channel.
+
+        Returns:
+            models.ChannelFeed: An object containing the channel feed information.
+        """
+        data: dict = self._query_api(f"{self.base_url}/channel/{channel_id}/feed")
+        return models.ChannelFeed.model_validate(data)
+
+    def search(
+        self, query: str, kind: str = "video"
+    ) -> list[models.Video] | list[models.Channel]:
         """
         Searches for videos or channel based on a query string and kind of results.
 
@@ -89,11 +105,15 @@ class Api:
         match kind:
             case "video":
                 data = self._query_api(f"{self.base_url}/search?q={query}&kind={kind}")
-                videos = [models.VideoModel.model_validate(video_data) for video_data in data]
+                videos = [
+                    models.VideoModel.model_validate(video_data) for video_data in data
+                ]
                 return [models.Video(self, video) for video in videos]
             case "channel":
                 data = self._query_api(f"{self.base_url}/search?q={query}&kind={kind}")
-                return [models.Channel.model_validate(channel_data) for channel_data in data]
+                return [
+                    models.Channel.model_validate(channel_data) for channel_data in data
+                ]
             case _:
                 raise ValueError(f"Invalid kind for search: {kind}")
 
