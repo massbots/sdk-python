@@ -1,4 +1,5 @@
 from __future__ import annotations
+from datetime import datetime
 import time
 from typing import Callable
 
@@ -49,6 +50,23 @@ class Channel(APIBaseModel):
     video_count: int
     view_count: int
     thumbnails: dict[str, Thumbnail] | None = Field(default=None)
+
+
+class ChannelFeedEntry(APIBaseModel):
+    video_id: str
+    title: str
+    author: str
+    channel_id: str
+    published: datetime
+    updated: datetime
+    thumbnail_url: str
+
+
+class ChannelFeed(APIBaseModel):
+    channel_id: str
+    title: str
+    author: str
+    entries: list[ChannelFeedEntry]
 
 
 class VideoFormat(APIBaseModel):

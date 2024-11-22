@@ -29,6 +29,9 @@ print(result.file_id)
 channel = mb.channel(video.channel_id)
 print(f"Channel: {channel.title}")
 
+channel_feed = mb.channel_feed(channel.id)
+print(f"Channel feed: {channel_feed}")
+
 search = mb.search("Rick Astley")
 print(f"Search: {len(search)} items")
 
